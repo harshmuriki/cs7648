@@ -307,7 +307,7 @@ def mat2quat(rmat, precise=False):
     Returns:
         vec4 float quaternion angles
     """
-    M = np.array(rmat, dtype=np.float32, copy=False)[:3, :3]
+    M = np.asarray(rmat, dtype=np.float32)[:3, :3]
     if precise:
         q = np.empty((4,))
         t = np.trace(M)
