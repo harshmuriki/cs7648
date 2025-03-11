@@ -1,0 +1,20 @@
+1da618767a5aa7c5fd3dda9135d7b8c5b8010a1d
+diff --git a/requirements.txt b/requirements.txt
+index c644c33b..354104fb 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -6,10 +6,13 @@ colorlog
+ tqdm
+ glfw
+ gym
++gdown
++h5py
+ imageio
+ imageio-ffmpeg
+ ipdb
+-moviepy
++moviepy==1.0.3
++mpi4py
+ mujoco-py
+ opencv-python
+ openvr

@@ -6,10 +6,13 @@ colorlog
 tqdm
 glfw
 gym
+gdown
+h5py
 imageio
 imageio-ffmpeg
 ipdb
-moviepy
+moviepy==1.0.3
+mpi4py
 mujoco-py
 opencv-python
 openvr
