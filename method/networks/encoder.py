@@ -50,7 +50,10 @@ class Encoder(nn.Module):
                     self.base[k](v, detach_conv=detach_conv)
                 )
             else:
-                encoder_outputs.append(v.flatten(start_dim=1))
+                # print(f"Attempting reshape on key '{k}'") # Add this
+
+                # encoder_outputs.append(v.flatten(start_dim=1))
+                encoder_outputs.append(v.reshape(v.size(0), -1))
         out = torch.cat(encoder_outputs, dim=-1)
         assert len(out.shape) == 2
         return out

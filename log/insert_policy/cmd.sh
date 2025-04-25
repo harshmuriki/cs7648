@@ -1,0 +1,1 @@
+python -m rl --algo bc --run_prefix ik_toy_table --env furniture-sawyer-v0 --gpu 1 --max_episode_steps 500 --furniture_name toy_table --demo_path demos/Sawyer_move_toy_table/Sawyer --wandb True --port 1040 --seed 12

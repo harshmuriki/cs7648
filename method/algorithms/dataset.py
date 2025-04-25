@@ -115,7 +115,13 @@ class ReplayBuffer(object):
     # store transitions
     def store_episode(self, rollout):
         # @rollout can be any length of transitions
+        print("all keys", self._keys)
+        print("rollout", rollout.keys())
+        print("data", self._buffer['opt'])
         for k in self._keys:
+            if k not in rollout.keys():
+                rollout[k] = []
+            
             if self._current_size < self._capacity:
                 self._buffer[k].append(rollout[k])
             else:
@@ -192,12 +198,17 @@ class RandomSampler(object):
         self._image_crop_size = image_crop_size
 
     def sample_func(self, episode_batch, batch_size_in_transitions):
-        rollout_batch_size = len(episode_batch["ac"])
+        rollout_batch_size = len(episode_batch["ob"])
         batch_size = batch_size_in_transitions
+        
+        valid_episode_idxs = [i for i in range(rollout_batch_size) if len(episode_batch["ob"][i]) > 0]
+        if not valid_episode_idxs:
+            raise ValueError("No non-empty episodes in buffer.")
+
 
         episode_idxs = np.random.randint(0, rollout_batch_size, batch_size)
         t_samples = [
-            np.random.randint(len(episode_batch["ac"][episode_idx]))
+            np.random.randint(len(episode_batch["ob"][episode_idx]))
             for episode_idx in episode_idxs
         ]
 

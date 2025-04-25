@@ -121,7 +121,7 @@ class BCAgent(BaseAgent):
             eval_info = Info()
             for transitions in self._val_loader:
                 _eval_info = self._update_network(transitions, train=False)
-                eval_info.add(_val_info)
+                eval_info.add(_eval_info)
             self._epoch += 1
             return eval_info.get_dict(only_scalar=True)
         logger.warning("No validation set available, make sure '--val_split' is set")
@@ -137,13 +137,28 @@ class BCAgent(BaseAgent):
         # convert double tensor to float32 tensor
         _to_tensor = lambda x: to_tensor(x, self._config.device)
         o = _to_tensor(o)
+        print("Processed observation shape:")
+        # for key, value in o.items():
+        #     if hasattr(value, "shape"):
+        #         print(f"{key}: {value.shape}")
+        #     elif isinstance(value, list):
+        #         print(f"{key}: {len(value)} (list with length)")
+        #     else:
+        #         print(f"{key}: {type(value)} (no shape)")
         ac = _to_tensor(transitions["ac"])
+        for key, value in ac.items():
+            if hasattr(value, "shape"):
+                print(f"{key}: {value.shape}")
+            elif isinstance(value, list):
+                print(f"{key}: {len(value)} (list with length)")
+            else:
+                print(f"{key}: {type(value)} (no shape)")
         if isinstance(ac, OrderedDict):
             ac = list(ac.values())
             if len(ac[0].shape) == 1:
                 ac = [x.unsqueeze(0) for x in ac]
             ac = torch.cat(ac, dim=-1)
-
+            
         # the actor loss
         pred_ac, _ = self._actor(o)
         if isinstance(pred_ac, OrderedDict):
@@ -151,12 +166,18 @@ class BCAgent(BaseAgent):
             if len(pred_ac[0].shape) == 1:
                 pred_ac = [x.unsqueeze(0) for x in pred_ac]
             pred_ac = torch.cat(pred_ac, dim=-1)
+        print("Predicted action shape:", pred_ac.shape)
 
         diff = ac - pred_ac
         actor_loss = diff.pow(2).mean()
         info["actor_loss"] = actor_loss.cpu().item()
         info["pred_ac"] = pred_ac.cpu().detach()
         info["GT_ac"] = ac.cpu()
+        
+        print("pred_ac", pred_ac[0].cpu().detach())
+        print("GT_ac", ac[0].cpu().detach())
+        print("actor loss", info["actor_loss"])
+        
         diff = torch.sum(torch.abs(diff), axis=0).cpu()
         for i in range(diff.shape[0]):
             info["action" + str(i) + "_L1loss"] = diff[i].mean().item()

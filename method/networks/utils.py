@@ -29,7 +29,7 @@ class CNN(nn.Module):
         out = ob
         for conv in self.convs:
             out = F.relu(conv(out))
-        out = out.flatten(start_dim=1)
+        out = out.flatten(1)
 
         if detach_conv:
             out = out.detach()
@@ -116,7 +116,7 @@ def flatten_ob(ob: dict, ac=None):
         if single_ob:
             img = torch.flatten(image)
         else:  # batch of obs, flatten after bs dim
-            img = torch.flatten(image, start_dim=1)
+            img = torch.flatten(image,1)
         inp.append(img)
     # now flatten into Nx1 tensors
     if single_ob:

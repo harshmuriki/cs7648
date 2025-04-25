@@ -55,7 +55,7 @@ def run(parser=None):
         logger.warn("Received signal %s: exiting", signal)
         sys.exit(128 + signal)
 
-    signal.signal(signal.SIGHUP, shutdown)
+    # signal.signal(signal.SIGHUP, shutdown)
     signal.signal(signal.SIGINT, shutdown)
     signal.signal(signal.SIGTERM, shutdown)
 
@@ -65,7 +65,7 @@ def run(parser=None):
     torch.cuda.manual_seed_all(config.seed)
 
     if config.gpu is not None:
-        os.environ["CUDA_VISIBLE_DEVICES"] = "{}".format(config.gpu)
+        # os.environ["CUDA_VISIBLE_DEVICES"] = "{}".format(config.gpu)  #Like why
         assert torch.cuda.is_available()
         config.device = torch.device("cuda")
     else:

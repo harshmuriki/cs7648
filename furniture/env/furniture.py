@@ -2195,7 +2195,7 @@ class FurnitureEnv(metaclass=EnvMeta):
             self.render("rgb_array")[0]
         with open(config.load_demo, "rb") as f:
             demo = pickle.load(f)
-            all_states = demo["state"]
+            all_states = demo["states"]
             if config.debug:
                 for i, (obs, action) in enumerate(zip(demo["obs"], demo["actions"])):
                     logger.debug("action", i, action)

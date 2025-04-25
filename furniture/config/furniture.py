@@ -1,7 +1,7 @@
 import argparse
 
-from ..util import str2bool, str2intlist, str2set
-from ..env.models import furniture_names, furniture_ids, background_names
+from furniture.env.models import furniture_names, background_names, furniture_ids
+from furniture.util import str2bool, parse_demo_file_name, str2bool, str2intlist, str2set
 
 
 def size_range(x):

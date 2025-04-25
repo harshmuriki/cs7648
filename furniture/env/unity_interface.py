@@ -196,7 +196,7 @@ class UnityInterface(object):
     def _find_unity_path(self):
         """ Finds path to Unity app. """
         cwd = os.getcwd()
-        file_name = "binary/Furniture"
+        file_name = "C:/Users/harsh/OneDrive - Georgia Institute of Technology/Documents/Georgia Tech/Spring 2025/CS 7648 IRL/Project/CS7648/binary/Furniture"
         true_filename = "Furniture"
 
         launch_string = None

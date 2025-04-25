@@ -2,6 +2,7 @@
 from .sac_agent import SACAgent
 from .ppo_agent import PPOAgent
 from .ddpg_agent import DDPGAgent
+from .hierarchical_bc_ppo import HierarchicalBCPPOAgent
 
 # IL algorithms
 from .bc_agent import BCAgent
@@ -14,6 +15,7 @@ RL_ALGOS = {
     "ppo": PPOAgent,
     "ddpg": DDPGAgent,
     "td3": DDPGAgent,
+    "hbcppo": HierarchicalBCPPOAgent
 }
 
 

@@ -213,7 +213,7 @@ class Trainer(object):
             runner = self._runner.run(
                 every_steps=self._config.rollout_length, step=step
             )
-        elif self._config.algo == "ppo":
+        elif self._config.algo in ["ppo", "hbcppo"]:
             runner = self._runner.run(
                 every_steps=self._config.rollout_length, step=step
             )

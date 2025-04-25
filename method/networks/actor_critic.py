@@ -62,11 +62,13 @@ class Actor(nn.Module):
 
     def forward(self, ob: dict, detach_conv=False):
         out = self.encoder(ob, detach_conv=detach_conv)
+        # if out.size(1) == 50:
+        #     out = out[:, :49]
         out = self._activation_fn(self.fc(out))
-
+        
         means, stds = OrderedDict(), OrderedDict()
         for k, v in self._ac_space.spaces.items():
-            if isinstance(v, gym.spaces.Box): # and self._gaussian:
+            if isinstance(v, gym.spaces.Box):
                 mean, log_std = self.fcs[k](out).chunk(2, dim=-1)
                 log_std_min, log_std_max = -10, 2
                 log_std = torch.tanh(log_std)
@@ -79,6 +81,7 @@ class Actor(nn.Module):
             stds[k] = std
 
         return means, stds
+
 
     def act(self, ob, deterministic=False, activations=None, return_log_prob=False, detach_conv=False):
         """ Samples action for rollout. """

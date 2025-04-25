@@ -109,10 +109,13 @@ class MujocoXML(object):
         available_modes = ["mujoco_py"]
         with io.StringIO() as string:
             string.write(ET.tostring(self.root, encoding="unicode"))
+            with open("temp.xml", "w") as f:
+                f.write(string.getvalue())
             if mode == "mujoco_py":
-                from mujoco_py import load_model_from_xml
-
-                model = load_model_from_xml(string.getvalue())
+                from mujoco_py import load_model_from_xml, load_model_from_path
+ 
+                # model = load_model_from_xml(string.getvalue())
+                model = load_model_from_path("temp.xml")
                 return model
             raise ValueError(
                 "Unkown model mode: {}. Available options are: {}".format(

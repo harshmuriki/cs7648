@@ -111,6 +111,7 @@ def main(args):
     )
     print("=" * 80)
     print()
+    # 0-move, 1-grasp, 2-move, 3-insert
 
     # manual control of agent using keyboard
     env.run_manual(args)

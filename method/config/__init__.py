@@ -48,7 +48,7 @@ def add_method_arguments(parser):
         "--algo",
         type=str,
         default="sac",
-        choices=["sac", "ppo", "ddpg", "td3", "bc", "gail", "dac",],
+        choices=["sac", "ppo", "ddpg", "td3", "bc", "gail", "dac","hbcppo"],
     )
 
     # training
@@ -84,11 +84,11 @@ def add_method_arguments(parser):
     parser.add_argument(
         "--wandb",
         type=str2bool,
-        default=False,
+        default=True,
         help="set it True if you want to use wandb",
     )
     parser.add_argument("--wandb_entity", type=str, default=None)  # Please specify wandb entity
-    parser.add_argument("--wandb_project", type=str, default="robot-learning")
+    parser.add_argument("--wandb_project", type=str, default="robot_learning")
     parser.add_argument("--record_video", type=str2bool, default=True)
     parser.add_argument("--record_video_caption", type=str2bool, default=True)
     try:
@@ -133,6 +133,9 @@ def add_method_arguments(parser):
     elif args.algo == "bc":
         add_il_arguments(parser)
         add_bc_arguments(parser)
+    
+    elif args.algo =="hbcppo":
+        add_hbcppo_arguments(parser)
 
     elif args.algo in ["gail", "gaifo", "gaifo-s"]:
         add_il_arguments(parser)
@@ -234,8 +237,8 @@ def add_sac_arguments(parser):
     parser.add_argument(
         "--alpha_lr", type=float, default=1e-4, help="the learning rate of the actor"
     )
-    parser.set_defaults(actor_lr=3e-4)
-    parser.set_defaults(critic_lr=3e-4)
+    parser.set_defaults(actor_lr=3e-3)
+    parser.set_defaults(critic_lr=3e-3)
     parser.set_defaults(evaluate_interval=5000)
     parser.set_defaults(ckpt_interval=10000)
     parser.set_defaults(log_interval=500)
@@ -315,8 +318,8 @@ def add_il_arguments(parser):
 
 def add_bc_arguments(parser):
     parser.set_defaults(gaussian_policy=False)
-    parser.set_defaults(max_global_step=100)
-    parser.set_defaults(evaluate_interval=100)
+    parser.set_defaults(max_global_step=5000)
+    parser.set_defaults(evaluate_interval=200)
     parser.set_defaults(ob_norm=False)
     parser.add_argument(
         "--bc_lr", type=float, default=1e-3, help="learning rate for bc"
@@ -361,6 +364,53 @@ def add_dac_arguments(parser):
     parser.set_defaults(actor_update_delay=1000)
     parser.set_defaults(batch_size=100)
     parser.set_defaults(gail_reward="d")
+
+def add_hbcppo_arguments(parser):
+    """
+    Hierarchical BC+PPO:
+      - high-level PPO over a discrete set of BC policies
+      --options             comma-sep list of subtask names
+      --low_ckpt_paths      comma-sep list of matching BC checkpoint files
+    """
+    add_rl_arguments(parser)
+    add_on_policy_arguments(parser)
+    parser.add_argument(
+        "--ppo_clip",
+        type=float,
+        default=0.2,
+        help="clipping parameter for high-level PPO",
+    )
+    parser.add_argument(
+        "--value_loss_coeff",
+        type=float,
+        default=0.5,
+        help="value loss coeff for high-level PPO",
+    )
+    parser.add_argument(
+        "--entropy_loss_coeff",
+        type=float,
+        default=1e-4,
+        help="entropy bonus coeff for high-level PPO",
+    )
+    parser.add_argument(
+        "--ppo_epoch", type=int, default=5, help="number of PPO epochs per update"
+    )
+    parser.add_argument(
+        "--max_grad_norm", type=float, default=None, help="grad norm clip for PPO"
+    )
+
+    parser.add_argument(
+        "--options",
+        type=str2list,
+        default="grasp,insert,move",
+        help="comma-separated list of low-level BC subtask names",
+    )
+    parser.add_argument(
+        "--low_ckpt_paths",
+        type=str2list,
+        default="log/grasp_policy/ckpt_00005000.pt,log/insert_policy/ckpt_00005000.pt,log/move_policy/ckpt_00005000.pt",
+        help="comma-separated list of pretrained BC checkpoint files (must align with --options)",
+    )
 
 
 def argparser():

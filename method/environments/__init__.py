@@ -5,7 +5,7 @@ Define all environments and provide helper functions to load environments.
 # OpenAI gym interface
 import gym
 import dmc2gym
-
+import traceback
 from ..utils.logger import logger
 from ..utils.gym_env import DictWrapper, FrameStackWrapper, GymWrapper, AbsorbingWrapper
 from ..utils.subproc_vec_env import SubprocVecEnv
@@ -67,14 +67,16 @@ def get_gym_env(env_id, config):
         )
     else:
         env_kwargs = config.__dict__.copy()
+        # env_kwargs["max_episode_step"] = 500
         try:
             env = gym.make(env_id, **env_kwargs)
         except Exception as e:
             logger.warn("Failed to launch an environment with config.")
             logger.warn(e)
+            logger.warn(traceback.format_exc())
             logger.warn("Launch an environment without config.")
             env = gym.make(env_id)
-        env.seed(config.seed)
+        #env.seed(config.seed)
         env = GymWrapper(
             env=env,
             from_pixels=(config.encoder_type == "cnn"),
@@ -83,7 +85,6 @@ def get_gym_env(env_id, config):
             channels_first=True,
             frame_skip=config.action_repeat,
         )
-
     env = DictWrapper(env)
     if config.encoder_type == "cnn":
         env = FrameStackWrapper(env, frame_stack=3)

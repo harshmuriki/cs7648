@@ -1,7 +1,7 @@
 import argparse
 
-from .furniture import add_argument as add_furniture_arguments
-from ..util import str2bool
+from furniture.config.furniture import add_argument as add_furniture_arguments
+from furniture.util import str2bool
 
 
 def create_parser(env=None):

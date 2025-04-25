@@ -33,7 +33,7 @@ class ExpertDataset(Dataset):
         assert (
             path is not None
         ), "--demo_path should be set (e.g. demos/Sawyer_toy_table)"
-        demo_files = self._get_demo_files(path)
+        demo_files = self._get_demo_files(path) # here
         num_demos = 0
 
         # now load the picked numpy arrays
@@ -42,8 +42,11 @@ class ExpertDataset(Dataset):
                 demos = pickle.load(f)
                 if not isinstance(demos, list):
                     demos = [demos]
+                
+                # demos["actions"] = demos["actions"].tolist()[:-1]
 
                 for demo in demos:
+                    # demo["actions"] = demo["actions"][:-1]
                     if len(demo["obs"]) != len(demo["actions"]) + 1:
                         logger.error(
                             "Mismatch in # of observations (%d) and actions (%d) (%s)",
@@ -52,6 +55,7 @@ class ExpertDataset(Dataset):
                             file_path,
                         )
                         continue
+                        
 
                     offset = np.random.randint(0, subsample_interval)
                     num_demos += 1
@@ -83,7 +87,7 @@ class ExpertDataset(Dataset):
                     for i in range(offset, length, subsample_interval):
                         transition = {
                             "ob": demo["obs"][i],
-                            "ob_next": demo["obs"][i + 1],
+                            "ob_next": demo["obs"][i+1],
                         }
                         if isinstance(demo["actions"][i], dict):
                             transition["ac"] = demo["actions"][i]

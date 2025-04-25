@@ -6,9 +6,11 @@ demonstrations and 2) recording and playback of their own demos.
 
 import argparse
 
-from env import make_env
-from env.models import furniture_names, background_names, agent_names, furniture_name2id
-from util import str2bool, parse_demo_file_name
+from furniture.env import make_env
+from furniture.env.models import furniture_names, background_names, agent_names, furniture_name2id
+from furniture.util import str2bool, parse_demo_file_name
+
+# To run: (irl_p) C:\Users\harsh\OneDrive - Georgia Institute of Technology\Documents\Georgia Tech\Spring 2025\CS 7648 IRL\Project\cs7648>python -m furniture.demo_demonstration --load_demo furniture/demos/Sawyer_toy_table_0002.pkl
 
 # available agents
 agent_names
@@ -28,7 +30,7 @@ def argsparser():
     parser.add_argument("--seed", type=int, default=123)
     parser.add_argument("--debug", type=str2bool, default=False)
 
-    import config.furniture as furniture_config
+    import furniture.config.furniture as furniture_config
 
     furniture_config.add_argument(parser)
 

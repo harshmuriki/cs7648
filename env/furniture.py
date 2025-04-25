@@ -2377,6 +2377,21 @@ class FurnitureEnv(metaclass=EnvMeta):
 
                 if self.action == "save" and self._record_demo:
                     self._demo.save(self.file_prefix)
+                    
+                    ### added
+                    ob = self._get_obs()
+                    low_obs = self._get_obs()
+
+                    ll_act = np.zeros_like(action)
+                    connect_a = float(action[-1])
+
+                    self._demo.add(
+                        ob=ob,
+                        low_level_ob=low_obs,
+                        low_level_action=ll_act,
+                        connect_action=connect_a,
+                    )
+                    ###
 
                 self._action_on = False
                 t += 1
